@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climora — Profile</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .page-header {
+        padding: 36px 0 20px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 32px;
+      }
+
+      .page-header h1 {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+      }
+      .page-header p {
+        color: var(--muted);
+        font-size: 0.875rem;
+        margin-top: 4px;
+      }
+
+      .profile-layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      /* Avatar card */
+      .avatar-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        text-align: center;
+        position: sticky;
+        top: calc(var(--nav-height) + 20px);
+      }
+
+      .avatar {
+        width: 72px;
+        height: 72px;
+        background: var(--accent-light);
+        color: var(--accent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0 auto 14px;
+      }
+
+      .avatar-name {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 2px;
+      }
+
+      .avatar-email {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+
+      .avatar-card .divider {
+        margin: 16px 0;
+      }
+
+      .nav-section-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        color: var(--muted);
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      .nav-section-link:hover,
+      .nav-section-link.active {
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      /* Form sections */
+      .profile-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 16px;
+      }
+
+      .profile-section h3 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* Emergency contact */
+      .contact-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.875rem;
+      }
+
+      .contact-row:last-child {
+        border-bottom: none;
+      }
+
+      .contact-row .name {
+        font-weight: 500;
+      }
+      .contact-row .info {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+
+      .add-contact-form {
+        background: var(--bg);
+        border-radius: var(--radius-sm);
+        padding: 16px;
+        margin-top: 14px;
+        display: none;
+      }
+
+      .add-contact-form.show {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .profile-layout {
+          grid-template-columns: 1fr;
+        }
+        .avatar-card {
+          position: static;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand"><span>🌍</span> Climora</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="planner.html">Plan Trip</a></li>
+        <li><a href="alerts.html">Alerts</a></li>
+        <li><a href="profile.html" class="active">Profile</a></li>
+        <li><a href="#" id="logout-btn" class="nav-cta">Log Out</a></li>
+      </ul>
+      <button class="hamburger"><span></span><span></span><span></span></button>
+    </nav>
+
+    <div class="page-wrapper">
+      <div class="container" style="padding-top: 0">
+        <div class="page-header">
+          <h1>Profile & Settings</h1>
+          <p>Manage your account, home location, and emergency contacts.</p>
+        </div>
+
+        <div class="profile-layout">
+          <!-- Sidebar -->
+          <div class="avatar-card">
+            <div class="avatar" id="avatar-initials">?</div>
+            <div class="avatar-name" id="avatar-name">—</div>
+            <div class="avatar-email" id="avatar-email">—</div>
+            <div class="divider"></div>
+            <button class="nav-section-link">👤 Personal Info</button>
+            <button class="nav-section-link">🏠 Home Location</button>
+            <button class="nav-section-link">👥 Emergency Contacts</button>
+            <div class="divider"></div>
+            <button
+              class="nav-section-link"
+              id="logout-side"
+              style="color: var(--danger)"
+            >
+              🚪 Log Out
+            </button>
+          </div>
+
+          <!-- Main content -->
+          <div>
+            <!-- Personal Info -->
+            <div class="profile-section">
+              <h3>👤 Personal Information</h3>
+              <form
+                id="profile-form"
+                style="display: flex; flex-direction: column; gap: 14px"
+              >
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-input" id="pf-name" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-input"
+                    id="pf-email"
+                    disabled
+                    style="opacity: 0.6; cursor: not-allowed"
+                  />
+                  <span class="text-sm text-muted mt-1"
+                    >Email cannot be changed</span
+                  >
+                </div>
+                <div>
+                  <button type="submit" class="btn btn-primary">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Home Location -->
+            <div class="profile-section">
+              <h3>🏠 Home Location</h3>
+              <p class="text-sm text-muted mb-4">
+                Your home city is used as the base for all climate comparisons.
+              </p>
+              <div
+                class="form-group"
+                style="position: relative; margin-bottom: 12px"
+              >
+                <label class="form-label">City / Location</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="home-loc-input"
+                  placeholder="Search your home city…"
+                />
+              </div>
+              <div style="display: flex; gap: 8px; margin-bottom: 12px">
+                <button class="btn btn-sm btn-outline" id="detect-home-btn">
+                  📍 Auto-detect
+                </button>
+                <button class="btn btn-sm btn-primary" id="save-home-btn">
+                  Save Home Location
+                </button>
+              </div>
+              <div id="home-loc-status" class="text-sm text-muted"></div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div class="profile-section">
+              <h3>👥 Emergency Contacts</h3>
+              <p class="text-sm text-muted mb-4">
+                Up to 3 contacts. They'll be notified with your location if you
+                trigger an SOS.
+              </p>
+
+              <div id="contacts-list-pf"></div>
+
+              <button class="btn btn-sm btn-outline mt-3" id="add-contact-btn">
+                + Add Contact
+              </button>
+
+              <div class="add-contact-form" id="add-contact-form">
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 10px;
+                    margin-bottom: 10px;
+                  "
+                >
+                  <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input
+                      type="text"
+                      class="form-input"
+                      id="c-name"
+                      placeholder="Contact name"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Relation</label>
+                    <select class="form-input" id="c-relation">
+                      <option>Family</option>
+                      <option>Friend</option>
+                      <option>Colleague</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 12px">
+                  <label class="form-label">Phone / WhatsApp</label>
+                  <input
+                    type="tel"
+                    class="form-input"
+                    id="c-phone"
+                    placeholder="+91 9876543210"
+                  />
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button class="btn btn-sm btn-primary" id="save-contact-btn">
+                    Add Contact
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline"
+                    id="cancel-contact-btn"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div
+              class="profile-section"
+              style="border-color: var(--danger-light)"
+            >
+              <h3 style="color: var(--danger)">⚠️ Danger Zone</h3>
+              <p class="text-sm text-muted mb-4">
+                Clear your trip history from this device.
+              </p>
+              <button
+                class="btn btn-outline"
+                id="clear-history-btn"
+                style="border-color: var(--danger); color: var(--danger)"
+              >
+                Clear Trip History
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+      const user = Auth.require();
+      let homeLocData = user?.homeLocation || null;
+
+      // Fill profile
+      if (user) {
+        const initials = user.name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase();
+        document.getElementById("avatar-initials").textContent = initials;
+        document.getElementById("avatar-name").textContent = user.name;
+        document.getElementById("avatar-email").textContent = user.email;
+        document.getElementById("pf-name").value = user.name;
+        document.getElementById("pf-email").value = user.email;
+
+        if (user.homeLocation) {
+          document.getElementById("home-loc-input").value =
+            user.homeLocation.name;
+          document.getElementById("home-loc-status").textContent =
+            `✅ Currently set to: ${user.homeLocation.name}`;
+        }
+      }
+
+      // Save personal info
+      document
+        .getElementById("profile-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = document.getElementById("pf-name").value.trim();
+          if (!name) return;
+          Auth.update({ name });
+          Toast.success("Profile updated!");
+          document.getElementById("avatar-name").textContent = name;
+          document.getElementById("avatar-initials").textContent = name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+        });
+
+      // Home location autocomplete
+      attachLocationSearch(document.getElementById("home-loc-input"), (r) => {
+        homeLocData = r;
+      });
+
+      // Auto-detect
+      document
+        .getElementById("detect-home-btn")
+        .addEventListener("click", async () => {
+          try {
+            const pos = await detectLocation();
+            const name = await Weather.reverseGeocode(pos.lat, pos.lon);
+            document.getElementById("home-loc-input").value = name;
+            homeLocData = { lat: pos.lat, lon: pos.lon, name, display: name };
+            Toast.success("Location detected!");
+          } catch {
+            Toast.error("Could not detect location.");
+          }
+        });
+
+      // Save home location
+      document.getElementById("save-home-btn").addEventListener("click", () => {
+        if (!homeLocData) {
+          Toast.warn("Please select a location from the dropdown.");
+          return;
+        }
+        Auth.update({ homeLocation: homeLocData });
+        document.getElementById("home-loc-status").textContent =
+          `✅ Saved: ${homeLocData.name}`;
+        Toast.success("Home location saved!");
+      });
+
+      // Emergency contacts
+      function renderContacts() {
+        const curr = Auth.current();
+        const contacts = curr?.emergencyContacts || [];
+        const el = document.getElementById("contacts-list-pf");
+        if (!contacts.length) {
+          el.innerHTML = `<p class="text-sm text-muted">No contacts added yet.</p>`;
+          return;
+        }
+        el.innerHTML = contacts
+          .map(
+            (c, i) => `
+      <div class="contact-row">
+        <div>
+          <div class="name">${c.name}</div>
+          <div class="info">${c.phone} · ${c.relation}</div>
+        </div>
+        <button class="btn btn-sm btn-outline" onclick="removeContact(${i})" style="color:var(--danger);border-color:var(--danger)">Remove</button>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      renderContacts();
+
+      document
+        .getElementById("add-contact-btn")
+        .addEventListener("click", () => {
+          const curr = Auth.current();
+          if ((curr?.emergencyContacts || []).length >= 3) {
+            Toast.warn("Maximum 3 contacts allowed.");
+            return;
+          }
+          document.getElementById("add-contact-form").classList.add("show");
+        });
+
+      document
+        .getElementById("cancel-contact-btn")
+        .addEventListener("click", () => {
+          document.getElementById("add-contact-form").classList.remove("show");
+        });
+
+      document
+        .getElementById("save-contact-btn")
+        .addEventListener("click", () => {
+          const name = document.getElementById("c-name").value.trim();
+          const phone = document.getElementById("c-phone").value.trim();
+          const rel = document.getElementById("c-relation").value;
+          if (!name || !phone) {
+            Toast.warn("Please fill in name and phone.");
+            return;
+          }
+
+          const curr = Auth.current();
+          const contacts = [
+            ...(curr?.emergencyContacts || []),
+            { name, phone, relation: rel },
+          ];
+          Auth.update({ emergencyContacts: contacts });
+          renderContacts();
+          document.getElementById("add-contact-form").classList.remove("show");
+          document.getElementById("c-name").value = "";
+          document.getElementById("c-phone").value = "";
+          Toast.success("Contact added!");
+        });
+
+      function removeContact(idx) {
+        const curr = Auth.current();
+        const contacts = [...(curr?.emergencyContacts || [])];
+        contacts.splice(idx, 1);
+        Auth.update({ emergencyContacts: contacts });
+        renderContacts();
+        Toast.success("Contact removed.");
+      }
+
+      document
+        .getElementById("clear-history-btn")
+        .addEventListener("click", () => {
+          if (!confirm("Clear all your trip history from this device?")) return;
+          localStorage.removeItem(`climora_history_${user?.id}`);
+          Toast.success("Trip history cleared.");
+        });
+
+      document
+        .getElementById("logout-side")
+        .addEventListener("click", () => Auth.logout());
+    </script>
+  </body>
+</html>
