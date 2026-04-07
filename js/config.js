@@ -1,4 +1,4 @@
-// 🌍 Climora Configuration File
+
 
 const CONFIG = {
   OPENWEATHER_KEY: "YOUR_API_KEY",
