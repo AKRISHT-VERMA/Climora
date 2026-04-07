@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climora — Dashboard</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .dash-header {
+        padding: 36px 0 24px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 32px;
+      }
+
+      .dash-header h1 {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+      }
+
+      .dash-header p {
+        color: var(--muted);
+        font-size: 0.875rem;
+        margin-top: 4px;
+      }
+
+      .home-loc-card {
+        background: linear-gradient(
+          135deg,
+          var(--accent-dark) 0%,
+          var(--accent) 100%
+        );
+        color: white;
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 24px;
+      }
+
+      .home-loc-card .label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        opacity: 0.75;
+        margin-bottom: 6px;
+      }
+
+      .home-loc-card .city-name {
+        font-family: var(--font-display);
+        font-size: 1.6rem;
+        margin-bottom: 4px;
+      }
+
+      .home-loc-card .weather-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+
+      .home-loc-card .w-item {
+        font-size: 0.875rem;
+        opacity: 0.85;
+      }
+
+      .home-loc-card .w-item strong {
+        font-size: 1rem;
+        opacity: 1;
+      }
+
+      .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+
+      .action-tile {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--text);
+        transition: var(--transition);
+      }
+
+      .action-tile:hover {
+        border-color: var(--accent);
+        box-shadow: 0 4px 16px rgba(45, 106, 79, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .action-tile .icon {
+        font-size: 1.5rem;
+      }
+      .action-tile .title {
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .action-tile .sub {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+
+      .section-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .section-row h2 {
+        font-size: 1.05rem;
+        font-weight: 600;
+      }
+
+      .history-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .history-item:last-child {
+        border-bottom: none;
+      }
+
+      .history-route {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .history-route .arrow {
+        color: var(--muted);
+      }
+
+      .history-meta {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .home-set-prompt {
+        background: var(--warn-light);
+        border: 1px solid var(--warn);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 24px;
+        font-size: 0.875rem;
+        color: var(--warn);
+      }
+
+      @media (max-width: 640px) {
+        .quick-actions {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand"><span>🌍</span> Climora</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="planner.html">Plan Trip</a></li>
+        <li><a href="alerts.html">Alerts</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="#" id="logout-btn" class="nav-cta">Log Out</a></li>
+      </ul>
+      <button class="hamburger"><span></span><span></span><span></span></button>
+    </nav>
+
+    <div class="page-wrapper">
+      <div class="container" style="padding-top: 0">
+        <div class="dash-header">
+          <h1 id="dash-greeting">Good morning 👋</h1>
+          <p id="dash-date"></p>
+        </div>
+
+        <!-- Home location not set warning -->
+        <div class="home-set-prompt hidden" id="home-prompt">
+          ⚠️ You haven't set your home location yet.
+          <a
+            href="profile.html"
+            class="btn btn-sm btn-outline"
+            style="border-color: var(--warn); color: var(--warn)"
+            >Set Now</a
+          >
+        </div>
+
+        <!-- Home location weather card -->
+        <div class="home-loc-card" id="home-card">
+          <div class="label">🏠 Your Home Location</div>
+          <div class="city-name" id="home-city">—</div>
+          <div class="weather-row" id="home-weather-row">
+            <div class="w-item">Loading weather…</div>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="quick-actions">
+          <a href="planner.html" class="action-tile">
+            <div class="icon">✈️</div>
+            <div class="title">Plan a Trip</div>
+            <div class="sub">Compare climate & get risk report</div>
+          </a>
+          <a href="alerts.html" class="action-tile">
+            <div class="icon">🔔</div>
+            <div class="title">Alerts</div>
+            <div class="sub">View active travel alerts</div>
+          </a>
+          <a href="profile.html" class="action-tile">
+            <div class="icon">🆘</div>
+            <div class="title">SOS Contacts</div>
+            <div class="sub">Manage emergency contacts</div>
+          </a>
+        </div>
+
+        <!-- Travel History -->
+        <div class="card mb-6">
+          <div class="section-row">
+            <h2>Recent Trips</h2>
+            <a href="planner.html" class="btn btn-sm btn-outline">+ New Trip</a>
+          </div>
+          <div id="history-list">
+            <div class="empty-state">
+              <div class="icon">🗺️</div>
+              <p>No trips yet. Plan your first trip!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+      const user = Auth.require();
+      if (user) {
+        // Greeting
+        const hr = new Date().getHours();
+        const greet =
+          hr < 12
+            ? "Good morning"
+            : hr < 18
+              ? "Good afternoon"
+              : "Good evening";
+        document.getElementById("dash-greeting").textContent =
+          `${greet}, ${user.name.split(" ")[0]} 👋`;
+        document.getElementById("dash-date").textContent =
+          new Date().toLocaleDateString("en-IN", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          });
+
+        // Home location card
+        const homeCard = document.getElementById("home-card");
+        const homeCity = document.getElementById("home-city");
+        const homePrompt = document.getElementById("home-prompt");
+
+        if (user.homeLocation) {
+          homeCity.textContent = user.homeLocation.name;
+          const { lat, lon } = user.homeLocation;
+          Weather.getCurrent(lat, lon)
+            .then((w) => {
+              document.getElementById("home-weather-row").innerHTML = `
+          <div class="w-item">${weatherEmoji(w.weather)} <strong>${w.temp}°C</strong></div>
+          <div class="w-item">💧 <strong>${w.humidity}%</strong> humidity</div>
+          <div class="w-item">💨 <strong>${w.wind_speed} m/s</strong> wind</div>
+          <div class="w-item">${w.description.charAt(0).toUpperCase() + w.description.slice(1)}</div>
+        `;
+            })
+            .catch(() => {
+              document.getElementById("home-weather-row").innerHTML =
+                `<div class="w-item">Weather unavailable — check API key</div>`;
+            });
+        } else {
+          homeCity.textContent = "Not set";
+          document.getElementById("home-weather-row").innerHTML =
+            `<div class="w-item">Set your home location in Profile</div>`;
+          homePrompt.classList.remove("hidden");
+        }
+
+        // Trip history
+        const history = getTripHistory();
+        const listEl = document.getElementById("history-list");
+        if (history.length) {
+          listEl.innerHTML = history
+            .map(
+              (t) => `
+        <div class="history-item">
+          <div>
+            <div class="history-route">
+              <span>${t.home.name}, ${t.home.country}</span>
+              <span class="arrow">→</span>
+              <span>${t.dest.name}, ${t.dest.country}</span>
+            </div>
+            <div class="history-meta">${fmtDate(t.date)}</div>
+          </div>
+          ${riskBadge(t.risk)}
+        </div>
+      `,
+            )
+            .join("");
+        }
+      }
+    </script>
+  </body>
+</html>
