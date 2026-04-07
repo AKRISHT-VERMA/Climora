@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climora — Plan a Trip</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .planner-header {
+        padding: 36px 0 20px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 32px;
+      }
+
+      .planner-header h1 {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+      }
+      .planner-header p {
+        color: var(--muted);
+        font-size: 0.875rem;
+        margin-top: 4px;
+      }
+
+      /* Search form */
+      .search-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 28px;
+        margin-bottom: 32px;
+      }
+
+      .loc-inputs {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 12px;
+        align-items: end;
+        margin-bottom: 20px;
+      }
+
+      .loc-arrow {
+        text-align: center;
+        padding-bottom: 10px;
+        color: var(--muted);
+        font-size: 1.2rem;
+      }
+
+      .detect-btn {
+        font-size: 0.78rem;
+        color: var(--accent);
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      /* Results */
+      .results-section {
+        display: none;
+      }
+      .results-section.show {
+        display: block;
+      }
+
+      /* Risk score */
+      .risk-score-card {
+        border-radius: var(--radius);
+        padding: 28px;
+        text-align: center;
+        margin-bottom: 24px;
+        border: 2px solid;
+      }
+
+      .risk-score-card.low {
+        background: var(--safe-light);
+        border-color: var(--safe);
+        color: var(--safe);
+      }
+      .risk-score-card.medium {
+        background: var(--warn-light);
+        border-color: var(--warn);
+        color: var(--warn);
+      }
+      .risk-score-card.high {
+        background: var(--danger-light);
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      .risk-label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        opacity: 0.8;
+      }
+      .risk-title {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        margin: 6px 0;
+      }
+      .risk-sub {
+        font-size: 0.85rem;
+        opacity: 0.8;
+      }
+
+      /* Climate comparison cards */
+      .compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .loc-weather-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+      }
+
+      .loc-weather-card .loc-tag {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .loc-weather-card .loc-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+      }
+
+      .weather-stat {
+        display: flex;
+        justify-content: space-between;
+        padding: 7px 0;
+        font-size: 0.875rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .weather-stat:last-child {
+        border-bottom: none;
+      }
+      .weather-stat .key {
+        color: var(--muted);
+      }
+      .weather-stat .val {
+        font-weight: 500;
+      }
+
+      /* Comparison bars */
+      .bars-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 24px;
+      }
+
+      .bar-item {
+        margin-bottom: 20px;
+      }
+      .bar-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .bar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .bar-header .name {
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .bar-header .vals {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .dual-bar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+      }
+
+      .dual-bar-item {
+        position: relative;
+      }
+
+      .dual-bar-item .bar-label {
+        font-size: 0.7rem;
+        color: var(--muted);
+        margin-bottom: 3px;
+      }
+
+      /* Recommendations */
+      .tip-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        display: flex;
+        gap: 14px;
+      }
+
+      .tip-icon {
+        font-size: 1.4rem;
+        flex-shrink: 0;
+      }
+
+      .tip-content .tip-category {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 3px;
+      }
+
+      .tip-content .tip-title {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+      }
+
+      .tip-content .tip-text {
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .disclaimer {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 12px 16px;
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 24px;
+      }
+
+      .loading-state {
+        text-align: center;
+        padding: 48px;
+        display: none;
+      }
+
+      .loading-state.show {
+        display: block;
+      }
+
+      @media (max-width: 640px) {
+        .loc-inputs {
+          grid-template-columns: 1fr;
+        }
+        .loc-arrow {
+          display: none;
+        }
+        .compare-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand"><span>🌍</span> Climora</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="planner.html" class="active">Plan Trip</a></li>
+        <li><a href="alerts.html">Alerts</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="#" id="logout-btn" class="nav-cta">Log Out</a></li>
+      </ul>
+      <button class="hamburger"><span></span><span></span><span></span></button>
+    </nav>
+
+    <div class="page-wrapper">
+      <div class="container" style="padding-top: 0">
+        <div class="planner-header">
+          <h1>Plan Your Trip</h1>
+          <p>
+            Enter your home and destination to get a full climate comparison and
+            health precautions.
+          </p>
+        </div>
+
+        <!-- Search Form -->
+        <div class="search-card">
+          <div class="loc-inputs">
+            <div class="form-group" style="position: relative">
+              <label class="form-label">🏠 From (Home)</label>
+              <input
+                type="text"
+                class="form-input"
+                id="home-input"
+                placeholder="e.g. Pune, India"
+              />
+              <button class="detect-btn" id="detect-home">
+                📍 Use my location
+              </button>
+            </div>
+            <div class="loc-arrow">✈️</div>
+            <div class="form-group" style="position: relative">
+              <label class="form-label">📍 To (Destination)</label>
+              <input
+                type="text"
+                class="form-input"
+                id="dest-input"
+                placeholder="e.g. Delhi, India"
+              />
+            </div>
+          </div>
+          <button
+            class="btn btn-primary"
+            id="compare-btn"
+            style="min-width: 180px"
+          >
+            Compare Climate
+          </button>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-state" id="loading">
+          <div
+            class="spinner"
+            style="width: 36px; height: 36px; margin: 0 auto 16px"
+          ></div>
+          <p class="text-muted">Fetching climate data…</p>
+        </div>
+
+        <!-- Results -->
+        <div class="results-section" id="results">
+          <!-- Risk Score -->
+          <div class="risk-score-card" id="risk-card">
+            <div class="risk-label">Overall Environmental Risk</div>
+            <div class="risk-title" id="risk-title">—</div>
+            <div class="risk-sub" id="risk-sub">—</div>
+          </div>
+
+          <!-- Side-by-side weather -->
+          <div class="compare-grid">
+            <div class="loc-weather-card">
+              <div class="loc-tag">🏠 Home</div>
+              <div class="loc-name" id="home-name">—</div>
+              <div id="home-stats"></div>
+            </div>
+            <div class="loc-weather-card">
+              <div class="loc-tag">📍 Destination</div>
+              <div class="loc-name" id="dest-name">—</div>
+              <div id="dest-stats"></div>
+            </div>
+          </div>
+
+          <!-- Comparison Bars -->
+          <div class="bars-section">
+            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 20px">
+              Climate Differences
+            </h3>
+            <div id="bars-container"></div>
+          </div>
+
+          <!-- Recommendations -->
+          <div>
+            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 14px">
+              💡 Travel Precautions
+            </h3>
+            <div
+              id="tips-list"
+              style="display: flex; flex-direction: column; gap: 10px"
+            ></div>
+            <div class="disclaimer">
+              ⚠️ These are general suggestions, not medical advice. Consult a
+              healthcare professional for personal health concerns.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/comparison.js"></script>
+    <script src="js/recommendations.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+      Auth.require();
+
+      // Pre-fill home from profile
+      const user = Auth.current();
+      const homeInput = document.getElementById("home-input");
+      const destInput = document.getElementById("dest-input");
+
+      if (user && user.homeLocation) {
+        homeInput.value = user.homeLocation.name;
+      }
+
+      // Location data holders
+      let homeLocation = user?.homeLocation || null;
+      let destLocation = null;
+
+      // Autocomplete
+      attachLocationSearch(homeInput, (r) => {
+        homeLocation = r;
+      });
+      attachLocationSearch(destInput, (r) => {
+        destLocation = r;
+      });
+
+      // Detect home location
+      document
+        .getElementById("detect-home")
+        .addEventListener("click", async () => {
+          try {
+            const pos = await detectLocation();
+            const name = await Weather.reverseGeocode(pos.lat, pos.lon);
+            homeInput.value = name;
+            homeLocation = { lat: pos.lat, lon: pos.lon, name, display: name };
+            Toast.success("Location detected!");
+          } catch (e) {
+            Toast.error("Could not detect location. Please enter manually.");
+          }
+        });
+
+      // Compare
+      document
+        .getElementById("compare-btn")
+        .addEventListener("click", async () => {
+          if (!homeLocation) {
+            Toast.warn("Please select a home location.");
+            return;
+          }
+          if (!destLocation) {
+            Toast.warn("Please select a destination.");
+            return;
+          }
+          if (
+            homeLocation.lat === destLocation.lat &&
+            homeLocation.lon === destLocation.lon
+          ) {
+            Toast.warn("Home and destination appear to be the same location.");
+            return;
+          }
+
+          document.getElementById("loading").classList.add("show");
+          document.getElementById("results").classList.remove("show");
+          document.getElementById("compare-btn").disabled = true;
+
+          try {
+            const [homeData, destData] = await Promise.all([
+              Weather.getFullProfile(homeLocation.lat, homeLocation.lon),
+              Weather.getFullProfile(destLocation.lat, destLocation.lon),
+            ]);
+
+            const result = Comparison.compare(homeData, destData);
+            const tips = Recommendations.generate(result);
+
+            saveTripToHistory(homeData, destData, result);
+            renderResults(homeData, destData, result, tips);
+          } catch (e) {
+            Toast.error(
+              "Failed to fetch weather data. Check your API keys in js/config.js",
+            );
+            console.error(e);
+          } finally {
+            document.getElementById("loading").classList.remove("show");
+            document.getElementById("compare-btn").disabled = false;
+          }
+        });
+
+      function renderResults(home, dest, result, tips) {
+        // Risk card
+        const riskCard = document.getElementById("risk-card");
+        riskCard.className = `risk-score-card ${result.level}`;
+        document.getElementById("risk-title").textContent = result.label;
+        document.getElementById("risk-sub").textContent =
+          `Score: ${result.score}/100 — Destination environment is ${result.level === "low" ? "similar to" : result.level === "medium" ? "moderately different from" : "significantly different from"} your home.`;
+
+        // Weather stats
+        function statsHTML(d) {
+          return `
+        <div class="weather-stat"><span class="key">🌡️ Temperature</span><span class="val">${d.temp}°C</span></div>
+        <div class="weather-stat"><span class="key">💧 Humidity</span><span class="val">${d.humidity}%</span></div>
+        <div class="weather-stat"><span class="key">🌬️ Condition</span><span class="val">${d.description}</span></div>
+        <div class="weather-stat"><span class="key">😷 AQI</span><span class="val">${d.aqi ?? "N/A"} ${d.aqi_level ? "(" + d.aqi_level + ")" : ""}</span></div>
+        <div class="weather-stat"><span class="key">☀️ UV Index</span><span class="val">${d.uvi ?? "N/A"} ${d.uvi_level ? "(" + d.uvi_level + ")" : ""}</span></div>
+        <div class="weather-stat"><span class="key">💨 Wind</span><span class="val">${d.wind_speed} m/s</span></div>
+      `;
+        }
+
+        document.getElementById("home-name").textContent =
+          `${home.name}, ${home.country}`;
+        document.getElementById("dest-name").textContent =
+          `${dest.name}, ${dest.country}`;
+        document.getElementById("home-stats").innerHTML = statsHTML(home);
+        document.getElementById("dest-stats").innerHTML = statsHTML(dest);
+
+        // Comparison bars
+        const maxVals = { temperature: 50, humidity: 100, aqi: 300, uvi: 12 };
+        const barsEl = document.getElementById("bars-container");
+        barsEl.innerHTML = "";
+
+        for (const [key, diff] of Object.entries(result.diffs)) {
+          const max = maxVals[key] || 100;
+          const homePct = Math.min((diff.home / max) * 100, 100);
+          const destPct = Math.min((diff.dest / max) * 100, 100);
+          const riskClass =
+            diff.risk === "high"
+              ? "danger"
+              : diff.risk === "medium"
+                ? "warn"
+                : "";
+
+          barsEl.innerHTML += `
+        <div class="bar-item">
+          <div class="bar-header">
+            <span class="name">${diff.label}</span>
+            <span class="vals">Home: ${diff.home} · Dest: ${diff.dest} · Δ ${diff.diff > 0 ? "+" : ""}${diff.diff}</span>
+          </div>
+          <div class="dual-bar">
+            <div class="dual-bar-item">
+              <div class="bar-label">Home</div>
+              <div class="compare-bar"><div class="compare-bar-fill" style="width:${homePct}%"></div></div>
+            </div>
+            <div class="dual-bar-item">
+              <div class="bar-label">Destination</div>
+              <div class="compare-bar"><div class="compare-bar-fill ${riskClass}" style="width:${destPct}%"></div></div>
+            </div>
+          </div>
+        </div>
+      `;
+        }
+
+        // Tips
+        const tipsEl = document.getElementById("tips-list");
+        tipsEl.innerHTML = tips
+          .map(
+            (t) => `
+      <div class="tip-card">
+        <div class="tip-icon">${t.icon}</div>
+        <div class="tip-content">
+          <div class="tip-category">${t.category}</div>
+          <div class="tip-title">${t.title}</div>
+          <div class="tip-text">${t.text}</div>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+
+        document.getElementById("results").classList.add("show");
+        document
+          .getElementById("results")
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    </script>
+  </body>
+</html>
