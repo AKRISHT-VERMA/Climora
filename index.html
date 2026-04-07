@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climora — Smart Health-Aware Travel Assistant</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .hero {
+        min-height: calc(100vh - var(--nav-height));
+        display: flex;
+        align-items: center;
+        padding: 60px 0 80px;
+      }
+
+      .hero-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 64px;
+        align-items: center;
+      }
+
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 14px;
+        background: var(--accent-light);
+        color: var(--accent);
+        border-radius: 99px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        margin-bottom: 18px;
+      }
+
+      .hero h1 {
+        font-family: var(--font-display);
+        font-size: 3rem;
+        line-height: 1.15;
+        color: var(--text);
+        margin-bottom: 18px;
+      }
+
+      .hero h1 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+
+      .hero p {
+        font-size: 1rem;
+        color: var(--muted);
+        line-height: 1.75;
+        margin-bottom: 32px;
+        max-width: 440px;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .hero-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero-card-title {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+
+      .loc-compare {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .loc-box {
+        flex: 1;
+        background: var(--bg);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+      }
+
+      .loc-box .city {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+
+      .loc-box .temp {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .loc-box .meta {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .arrow-icon {
+        color: var(--muted);
+        font-size: 1.2rem;
+      }
+
+      .mini-stat-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .mini-stat {
+        background: var(--bg);
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        text-align: center;
+      }
+
+      .mini-stat .val {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text);
+      }
+
+      .mini-stat .key {
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .features {
+        padding: 80px 0;
+        border-top: 1px solid var(--border);
+      }
+
+      .features-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+
+      .feature-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+      }
+
+      .feature-icon {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+      }
+
+      .feature-card h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .feature-card p {
+        font-size: 0.875rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .cta-section {
+        padding: 80px 0;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .cta-section h2 {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        margin-bottom: 12px;
+      }
+
+      .cta-section p {
+        color: var(--muted);
+        margin-bottom: 28px;
+      }
+
+      .how-it-works {
+        padding: 80px 0;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .steps {
+        display: flex;
+        gap: 0;
+        position: relative;
+        margin-top: 40px;
+      }
+
+      .step {
+        flex: 1;
+        text-align: center;
+        padding: 0 16px;
+        position: relative;
+      }
+
+      .step::after {
+        content: "→";
+        position: absolute;
+        right: -12px;
+        top: 28px;
+        color: var(--border);
+        font-size: 1.2rem;
+      }
+
+      .step:last-child::after {
+        display: none;
+      }
+
+      .step-num {
+        width: 52px;
+        height: 52px;
+        background: var(--accent-light);
+        color: var(--accent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+        margin: 0 auto 14px;
+      }
+
+      .step h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .step p {
+        font-size: 0.8rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      @media (max-width: 768px) {
+        .hero-inner {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .hero h1 {
+          font-size: 2.2rem;
+        }
+        .steps {
+          flex-direction: column;
+          gap: 24px;
+        }
+        .step::after {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand"> <span>🌍</span> Climora </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="planner.html">Plan Trip</a></li>
+        <li><a href="alerts.html">Alerts</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="login.html" class="nav-cta">Sign In</a></li>
+      </ul>
+      <button class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <div class="page-wrapper">
+      <!-- HERO -->
+      <section class="hero">
+        <div class="container">
+          <div class="hero-inner">
+            <div>
+              <div class="hero-tag">🌿 Your health-aware travel companion</div>
+              <h1>
+                Travel smarter,<br />stay <em>comfortable</em> everywhere.
+              </h1>
+              <p>
+                Climora compares climate conditions between your home and
+                destination — then gives you personalized precautions, risk
+                indicators, and smart alerts before and during your trip.
+              </p>
+              <div class="hero-actions">
+                <a href="login.html" class="btn btn-primary"
+                  >Get started free</a
+                >
+                <a href="planner.html" class="btn btn-outline">Plan a trip</a>
+              </div>
+            </div>
+            <div>
+              <div class="hero-card">
+                <div class="hero-card-title">Climate Comparison Preview</div>
+                <div class="loc-compare">
+                  <div class="loc-box">
+                    <div class="city">🏠 Pune</div>
+                    <div class="temp">32°C</div>
+                    <div class="meta">Humidity 58% · AQI 72</div>
+                  </div>
+                  <div class="arrow-icon">✈️</div>
+                  <div class="loc-box">
+                    <div class="city">📍 Delhi</div>
+                    <div class="temp">41°C</div>
+                    <div class="meta">Humidity 35% · AQI 168</div>
+                  </div>
+                </div>
+                <div class="mini-stat-row">
+                  <div class="mini-stat">
+                    <div class="val" style="color: var(--danger)">High</div>
+                    <div class="key">Risk Level</div>
+                  </div>
+                  <div class="mini-stat">
+                    <div class="val">+9°C</div>
+                    <div class="key">Temp Diff</div>
+                  </div>
+                  <div class="mini-stat">
+                    <div class="val" style="color: var(--warn)">168</div>
+                    <div class="key">Dest AQI</div>
+                  </div>
+                </div>
+                <div class="alert-banner warn mt-4">
+                  😷 High AQI — carry an N95 mask for outdoor activity.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section class="features">
+        <div class="container">
+          <div class="features-header">
+            <div class="section-title">
+              Everything you need before your trip
+            </div>
+            <div class="section-sub">
+              Built around your health, not just the weather.
+            </div>
+          </div>
+          <div class="grid-3">
+            <div class="feature-card">
+              <div class="feature-icon">🌡️</div>
+              <h3>Climate Comparison</h3>
+              <p>
+                Compare temperature, humidity, AQI, and UV index between your
+                home and destination using real-time data.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚠️</div>
+              <h3>Risk Assessment</h3>
+              <p>
+                Get a clear Low / Moderate / High risk score based on how
+                different the environments are from each other.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">💡</div>
+              <h3>Smart Suggestions</h3>
+              <p>
+                Receive practical, non-medical precautions — clothing tips,
+                hydration advice, UV care, and more.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔔</div>
+              <h3>Travel Alerts</h3>
+              <p>
+                Get notified about significant weather or air quality changes at
+                your destination before and during travel.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🆘</div>
+              <h3>SOS & Safety</h3>
+              <p>
+                Store emergency contacts and trigger an SOS that shares your
+                live location with your trusted people.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>Trip Dashboard</h3>
+              <p>
+                View your travel history, past climate reports, and risk trends
+                all in one clean dashboard.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section class="how-it-works">
+        <div class="container">
+          <div class="features-header">
+            <div class="section-title">How Climora works</div>
+            <div class="section-sub">
+              Three simple steps to be travel-ready.
+            </div>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <h4>Set your home</h4>
+              <p>
+                Auto-detect or manually enter your current city as your base
+                climate reference.
+              </p>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <h4>Enter destination</h4>
+              <p>
+                Search for where you're travelling. We fetch real-time climate
+                data instantly.
+              </p>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <h4>Get your report</h4>
+              <p>
+                Receive a full climate comparison, risk score, and personalized
+                travel precautions.
+              </p>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <h4>Travel safely</h4>
+              <p>
+                Stay updated with alerts during your trip. SOS your contacts if
+                needed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta-section">
+        <div class="container-sm">
+          <h2>Ready to travel smarter?</h2>
+          <p>Join Climora for free — no credit card required.</p>
+          <a href="login.html" class="btn btn-primary">Create your account</a>
+        </div>
+      </section>
+
+      <footer>
+        <div
+          class="container"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+          "
+        >
+          <span>🌍 Climora — Health-aware travel</span>
+          <span>Built for MIT-WPU · 2026</span>
+        </div>
+      </footer>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
