@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climora — Alerts</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .page-header {
+        padding: 36px 0 20px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 32px;
+      }
+
+      .page-header h1 {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+      }
+      .page-header p {
+        color: var(--muted);
+        font-size: 0.875rem;
+        margin-top: 4px;
+      }
+
+      /* SOS Button */
+      .sos-card {
+        background: var(--danger-light);
+        border: 2px solid var(--danger);
+        border-radius: var(--radius);
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .sos-text h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--danger);
+        margin-bottom: 4px;
+      }
+
+      .sos-text p {
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+
+      .sos-btn {
+        background: var(--danger);
+        color: white;
+        border: none;
+        border-radius: var(--radius-sm);
+        padding: 12px 28px;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: var(--transition);
+      }
+
+      .sos-btn:hover {
+        opacity: 0.88;
+        transform: scale(1.02);
+      }
+      .sos-btn:active {
+        transform: scale(0.98);
+      }
+
+      /* Alert items */
+      .alert-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        margin-bottom: 10px;
+      }
+
+      .alert-item.unread {
+        border-left: 3px solid var(--accent);
+      }
+      .alert-item.warn-item {
+        border-left: 3px solid var(--warn);
+      }
+      .alert-item.danger-item {
+        border-left: 3px solid var(--danger);
+      }
+
+      .alert-item-icon {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .alert-item-title {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 3px;
+      }
+
+      .alert-item-body {
+        font-size: 0.83rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .alert-item-time {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+
+      /* Live location section */
+      .live-loc-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        margin-bottom: 24px;
+      }
+
+      .live-loc-card h3 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .live-loc-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .loc-display {
+        font-size: 0.875rem;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .loc-display .dot {
+        width: 8px;
+        height: 8px;
+        background: var(--accent);
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* Contacts */
+      .contact-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.875rem;
+      }
+
+      .contact-item:last-child {
+        border-bottom: none;
+      }
+      .contact-name {
+        font-weight: 500;
+      }
+      .contact-phone {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand"><span>🌍</span> Climora</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="planner.html">Plan Trip</a></li>
+        <li><a href="alerts.html" class="active">Alerts</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="#" id="logout-btn" class="nav-cta">Log Out</a></li>
+      </ul>
+      <button class="hamburger"><span></span><span></span><span></span></button>
+    </nav>
+
+    <div class="page-wrapper">
+      <div class="container" style="padding-top: 0">
+        <div class="page-header">
+          <h1>Alerts & Safety</h1>
+          <p>
+            Real-time alerts, SOS, and live location sharing for emergencies.
+          </p>
+        </div>
+
+        <!-- SOS Section -->
+        <div class="sos-card">
+          <div class="sos-text">
+            <h3>🆘 Emergency SOS</h3>
+            <p>
+              Sends your current location to all saved emergency contacts. Use
+              only in genuine emergencies.
+            </p>
+          </div>
+          <button class="sos-btn" id="sos-btn">SOS</button>
+        </div>
+
+        <!-- Live Location -->
+        <div class="live-loc-card">
+          <h3>📍 Your Current Location</h3>
+          <div class="live-loc-inner">
+            <div class="loc-display">
+              <div class="dot"></div>
+              <span id="live-loc-text">Detecting…</span>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <button class="btn btn-sm btn-outline" id="refresh-loc">
+                🔄 Refresh
+              </button>
+              <button class="btn btn-sm btn-outline" id="share-loc">
+                📤 Share Location
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <div class="card mb-6">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 16px;
+            "
+          >
+            <h3 style="font-size: 0.95rem; font-weight: 600">
+              👥 Emergency Contacts
+            </h3>
+            <a href="profile.html" class="btn btn-sm btn-outline">Manage</a>
+          </div>
+          <div id="contacts-list">
+            <div class="empty-state" style="padding: 24px">
+              <div class="icon">👥</div>
+              <p>
+                No emergency contacts saved.
+                <a href="profile.html" style="color: var(--accent)"
+                  >Add contacts →</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerts Feed -->
+        <div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-bottom: 16px;
+            "
+          >
+            <h3 style="font-size: 0.95rem; font-weight: 600">
+              🔔 Recent Alerts
+            </h3>
+            <button class="btn btn-sm btn-outline" id="clear-alerts">
+              Clear All
+            </button>
+          </div>
+          <div id="alerts-feed"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOS Confirmation Modal -->
+    <div
+      id="sos-modal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: white;
+          border-radius: 18px;
+          padding: 32px;
+          max-width: 400px;
+          width: 90%;
+          text-align: center;
+        "
+      >
+        <div style="font-size: 2.5rem; margin-bottom: 12px">🆘</div>
+        <h2 style="font-size: 1.2rem; margin-bottom: 8px">Confirm SOS Alert</h2>
+        <p
+          style="font-size: 0.875rem; color: var(--muted); margin-bottom: 24px"
+        >
+          This will notify all your emergency contacts with your current
+          location. Only use this in a real emergency.
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center">
+          <button class="btn btn-outline" id="sos-cancel">Cancel</button>
+          <button class="btn btn-danger" id="sos-confirm">Send SOS Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+      const user = Auth.require();
+
+      // Sample alerts (in production, these come from your backend)
+      const sampleAlerts = [
+        {
+          icon: "☀️",
+          type: "warn-item",
+          title: "High UV Index at Destination",
+          body: "UV Index is expected to reach 9 (Very High) between 11am–3pm. Apply SPF 50+ sunscreen before going outside.",
+          time: "2 hours ago",
+        },
+        {
+          icon: "😷",
+          type: "danger-item",
+          title: "Poor Air Quality Alert",
+          body: "AQI at your destination has crossed 150 (Unhealthy). Limit outdoor activity and consider wearing an N95 mask.",
+          time: "5 hours ago",
+        },
+        {
+          icon: "🌡️",
+          type: "warn-item",
+          title: "Temperature Spike Expected",
+          body: "Temperatures at your destination may reach 42°C today. Stay hydrated and avoid peak sun hours.",
+          time: "Yesterday",
+        },
+        {
+          icon: "✅",
+          type: "",
+          title: "Trip Report Ready",
+          body: "Your climate comparison for Pune → Mumbai has been saved. View it in your Dashboard.",
+          time: "2 days ago",
+        },
+      ];
+
+      // Render alerts
+      const feed = document.getElementById("alerts-feed");
+      let alerts = JSON.parse(
+        localStorage.getItem(`climora_alerts_${user?.id}`) ||
+          JSON.stringify(sampleAlerts),
+      );
+
+      function renderAlerts() {
+        if (!alerts.length) {
+          feed.innerHTML = `<div class="empty-state"><div class="icon">🔔</div><p>No alerts. You're all clear!</p></div>`;
+          return;
+        }
+        feed.innerHTML = alerts
+          .map(
+            (a) => `
+      <div class="alert-item ${a.type}">
+        <div class="alert-item-icon">${a.icon}</div>
+        <div>
+          <div class="alert-item-title">${a.title}</div>
+          <div class="alert-item-body">${a.body}</div>
+          <div class="alert-item-time">${a.time}</div>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      renderAlerts();
+
+      document.getElementById("clear-alerts").addEventListener("click", () => {
+        alerts = [];
+        localStorage.setItem(`climora_alerts_${user?.id}`, "[]");
+        renderAlerts();
+        Toast.success("Alerts cleared");
+      });
+
+      // Emergency contacts
+      if (user && user.emergencyContacts && user.emergencyContacts.length) {
+        const el = document.getElementById("contacts-list");
+        el.innerHTML = user.emergencyContacts
+          .map(
+            (c) => `
+      <div class="contact-item">
+        <div>
+          <div class="contact-name">${c.name}</div>
+          <div class="contact-phone">${c.phone} · ${c.relation}</div>
+        </div>
+        <span class="badge badge-info">${c.relation}</span>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      // Live location
+      async function updateLocation() {
+        document.getElementById("live-loc-text").textContent = "Detecting…";
+        try {
+          const pos = await detectLocation();
+          const name = await Weather.reverseGeocode(pos.lat, pos.lon);
+          document.getElementById("live-loc-text").textContent =
+            `${name} (${pos.lat.toFixed(4)}, ${pos.lon.toFixed(4)})`;
+        } catch {
+          document.getElementById("live-loc-text").textContent =
+            "Location unavailable — enable browser permission";
+        }
+      }
+
+      updateLocation();
+      document
+        .getElementById("refresh-loc")
+        .addEventListener("click", updateLocation);
+
+      document.getElementById("share-loc").addEventListener("click", () => {
+        const locText = document.getElementById("live-loc-text").textContent;
+        if (navigator.share) {
+          navigator.share({
+            title: "My Location — Climora",
+            text: `I'm currently at: ${locText}`,
+          });
+        } else {
+          navigator.clipboard
+            .writeText(locText)
+            .then(() => Toast.success("Location copied to clipboard!"));
+        }
+      });
+
+      // SOS
+      const modal = document.getElementById("sos-modal");
+      document.getElementById("sos-btn").addEventListener("click", () => {
+        modal.style.display = "flex";
+      });
+      document.getElementById("sos-cancel").addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+      document.getElementById("sos-confirm").addEventListener("click", () => {
+        modal.style.display = "none";
+        const contacts = user?.emergencyContacts || [];
+        if (!contacts.length) {
+          Toast.warn(
+            "No emergency contacts saved. Please add contacts in Profile.",
+          );
+          return;
+        }
+        // In production: call your backend to send SMS/email
+        Toast.success(`🆘 SOS sent to ${contacts.length} contact(s)!`);
+        // Add to alerts feed
+        alerts.unshift({
+          icon: "🆘",
+          type: "danger-item",
+          title: "SOS Alert Sent",
+          body: `Emergency alert dispatched to ${contacts.length} contact(s) with your current location.`,
+          time: "Just now",
+        });
+        renderAlerts();
+      });
+    </script>
+  </body>
+</html>
