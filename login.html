@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climora — Sign In / Sign Up</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      body {
+        background: var(--bg);
+      }
+
+      .auth-wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .auth-card {
+        width: 100%;
+        max-width: 420px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 36px 32px;
+        box-shadow: var(--shadow);
+      }
+
+      .auth-logo {
+        text-align: center;
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        color: var(--accent-dark);
+        margin-bottom: 6px;
+      }
+
+      .auth-tagline {
+        text-align: center;
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-bottom: 28px;
+      }
+
+      .auth-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 3px;
+        margin-bottom: 24px;
+      }
+
+      .auth-tab {
+        padding: 8px;
+        text-align: center;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        border: none;
+        background: none;
+        transition: var(--transition);
+      }
+
+      .auth-tab.active {
+        background: var(--surface);
+        color: var(--text);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      }
+
+      .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .auth-form .hidden {
+        display: none;
+      }
+
+      .auth-divider {
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--muted);
+        position: relative;
+        margin: 4px 0;
+      }
+
+      .auth-divider::before,
+      .auth-divider::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 40%;
+        height: 1px;
+        background: var(--border);
+      }
+      .auth-divider::before {
+        left: 0;
+      }
+      .auth-divider::after {
+        right: 0;
+      }
+
+      .auth-footer {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .auth-footer a {
+        color: var(--accent);
+      }
+
+      .error-msg {
+        background: var(--danger-light);
+        color: var(--danger);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        display: none;
+      }
+
+      .error-msg.show {
+        display: block;
+      }
+
+      .password-wrap {
+        position: relative;
+      }
+      .password-wrap .form-input {
+        padding-right: 40px;
+      }
+      .toggle-pw {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-logo">🌍 Climora</div>
+        <div class="auth-tagline">Your health-aware travel companion</div>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login">Sign In</button>
+          <button class="auth-tab" id="tab-signup">Sign Up</button>
+        </div>
+
+        <!-- Error message -->
+        <div class="error-msg" id="auth-error"></div>
+
+        <!-- Login Form -->
+        <form class="auth-form" id="login-form" autocomplete="on">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+              type="email"
+              class="form-input"
+              id="login-email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="password-wrap">
+              <input
+                type="password"
+                class="form-input"
+                id="login-password"
+                placeholder="Enter your password"
+                required
+              />
+              <button
+                type="button"
+                class="toggle-pw"
+                onclick="togglePw('login-password', this)"
+              >
+                👁️
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+            Sign In
+          </button>
+          <div class="auth-footer">
+            Don't have an account? <a href="#" id="go-signup">Sign up free</a>
+          </div>
+        </form>
+
+        <!-- Signup Form -->
+        <form class="auth-form hidden" id="signup-form" autocomplete="on">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input
+              type="text"
+              class="form-input"
+              id="signup-name"
+              placeholder="Your name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+              type="email"
+              class="form-input"
+              id="signup-email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="password-wrap">
+              <input
+                type="password"
+                class="form-input"
+                id="signup-password"
+                placeholder="Min. 6 characters"
+                required
+                minlength="6"
+              />
+              <button
+                type="button"
+                class="toggle-pw"
+                onclick="togglePw('signup-password', this)"
+              >
+                👁️
+              </button>
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary btn-full"
+            id="signup-btn"
+          >
+            Create Account
+          </button>
+          <div class="auth-footer">
+            Already have an account? <a href="#" id="go-login">Sign in</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+      // Redirect if already logged in
+      Auth.redirectIfLoggedIn();
+
+      const tabLogin = document.getElementById("tab-login");
+      const tabSignup = document.getElementById("tab-signup");
+      const loginForm = document.getElementById("login-form");
+      const signupForm = document.getElementById("signup-form");
+      const errorEl = document.getElementById("auth-error");
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.classList.add("show");
+      }
+      function clearError() {
+        errorEl.classList.remove("show");
+      }
+
+      function switchTo(mode) {
+        clearError();
+        if (mode === "login") {
+          tabLogin.classList.add("active");
+          tabSignup.classList.remove("active");
+          loginForm.classList.remove("hidden");
+          signupForm.classList.add("hidden");
+        } else {
+          tabSignup.classList.add("active");
+          tabLogin.classList.remove("active");
+          signupForm.classList.remove("hidden");
+          loginForm.classList.add("hidden");
+        }
+      }
+
+      tabLogin.addEventListener("click", () => switchTo("login"));
+      tabSignup.addEventListener("click", () => switchTo("signup"));
+      document.getElementById("go-signup").addEventListener("click", (e) => {
+        e.preventDefault();
+        switchTo("signup");
+      });
+      document.getElementById("go-login").addEventListener("click", (e) => {
+        e.preventDefault();
+        switchTo("login");
+      });
+
+      // ===== LOGIN =====
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        clearError();
+        const email = document.getElementById("login-email").value.trim();
+        const pw = document.getElementById("login-password").value;
+        const btn = document.getElementById("login-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Signing in…';
+        setTimeout(() => {
+          const result = Auth.login(email, pw);
+          if (result.ok) {
+            Toast.success("Welcome back!");
+            setTimeout(() => (window.location.href = "dashboard.html"), 800);
+          } else {
+            showError(result.msg);
+            btn.disabled = false;
+            btn.textContent = "Sign In";
+          }
+        }, 600);
+      });
+
+      // ===== SIGNUP =====
+      signupForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        clearError();
+        const name = document.getElementById("signup-name").value.trim();
+        const email = document.getElementById("signup-email").value.trim();
+        const pw = document.getElementById("signup-password").value;
+        const btn = document.getElementById("signup-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Creating account…';
+        setTimeout(() => {
+          const result = Auth.signup(name, email, pw);
+          if (result.ok) {
+            Toast.success("Account created! Welcome to Climora 🌍");
+            setTimeout(() => (window.location.href = "dashboard.html"), 900);
+          } else {
+            showError(result.msg);
+            btn.disabled = false;
+            btn.textContent = "Create Account";
+          }
+        }, 600);
+      });
+
+      function togglePw(id, btn) {
+        const input = document.getElementById(id);
+        if (input.type === "password") {
+          input.type = "text";
+          btn.textContent = "🙈";
+        } else {
+          input.type = "password";
+          btn.textContent = "👁️";
+        }
+      }
+    </script>
+  </body>
+</html>
