@@ -1,7 +1,7 @@
 // 🌍 Climora Configuration File
 
 const CONFIG = {
-  OPENWEATHER_KEY: "YOUR_API_KEY_HERE", 
+  OPENWEATHER_KEY: "YOUR_API_KEY",
 
   OPENWEATHER_BASE: "https://api.openweathermap.org/data/2.5",
   OPENWEATHER_GEO: "https://api.openweathermap.org/geo/1.0",
@@ -18,5 +18,5 @@ const CONFIG = {
   },
 };
 
-// Make it globally accessible
+
 window.CONFIG = CONFIG;
